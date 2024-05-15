@@ -1,0 +1,50 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?
+  id        String   @id @default(cuid())
+  name      String?
+  updatedAt DateTime @updatedAt
+}
+
+model Email {
+  body       String?
+  createdAt  DateTime  @default(now())
+  id         String    @id @default(cuid())
+  labels     Label[]
+  recipients String?
+  sender     String?
+  subject    String?
+  thread     Thread?   @relation(fields: [threadId], references: [id])
+  threadId   String?
+  timestamp  DateTime?
+  updatedAt  DateTime  @updatedAt
+}
+
+model Thread {
+  createdAt    DateTime @default(now())
+  emails       Email[]
+  id           String   @id @default(cuid())
+  messages     String?
+  participants String?
+  subject      String?
+  updatedAt    DateTime @updatedAt
+}
+
+model Label {
+  color     String?
+  createdAt DateTime @default(now())
+  email     Email?   @relation(fields: [emailId], references: [id])
+  emailId   String?
+  id        String   @id @default(cuid())
+  name      String?
+  updatedAt DateTime @updatedAt
+}
